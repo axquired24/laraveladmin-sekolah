@@ -126,9 +126,9 @@ class SekolahCtrl extends Controller
         return Admin::form(Sekolah::class, function (Form $form) {
 
             // $form->display('id', 'ID');
-	        $form->display('name','Sekolah');
-	        $form->display('bk_teacher','Guru BK');
-	        $form->display('address','Alamat');
+	        $form->text('name','Sekolah');
+	        $form->text('bk_teacher','Guru BK');
+	        $form->textarea('address','Alamat');
 
             // $form->display('created_at', 'Created At');
              $form->display('updated_at', 'Updated At');
