@@ -37,7 +37,7 @@ return [
     /*
      * Laravel-admin html title.
      */
-    'title' => 'Admin',
+    'title' => 'Laravel Admin Coba',
 
     /*
      * Use `https`.
@@ -129,7 +129,7 @@ return [
     /*
      * @see https://adminlte.io/docs/2.4/layout
      */
-    'skin' => 'skin-blue-light',
+    'skin' => 'skin-red-light',
 
     /*
     |---------------------------------------------------------|
@@ -140,7 +140,7 @@ return [
     |               | sidebar-mini                            |
     |---------------------------------------------------------|
      */
-    'layout' => ['sidebar-mini', 'sidebar-collapse'],
+    'layout' => [''],
 
     /*
      * Version displayed in footer.

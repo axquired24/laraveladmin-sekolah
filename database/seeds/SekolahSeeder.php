@@ -14,12 +14,15 @@ class SekolahSeeder extends Seeder
      */
     public function run()
     {
-        // generate sekolah
+    	echo "Truncate Sekolah, Kelas, Siswa ...\n";
+    	$this->truncateTable();
+
+	    // generate sekolah
 	    $c_sekolah = 10;
 	    $c_kelas = 3;
 
 	    // Generate Sekolah, Kelas, Siswa
-	    echo "Generate Sekolah, Kelas, Siswa\n";
+	    echo "\nGenerate Sekolah, Kelas, Siswa\n";
 	    factory(Sekolah::class, $c_sekolah)->create()
 		    ->each(function($sekolah) use($c_kelas) {
 			    echo "Creating Sekolah: $sekolah->name ...\n";
@@ -38,5 +41,16 @@ class SekolahSeeder extends Seeder
 				    });
 			    });
 		    });
+    }
+
+    function truncateTable() {
+	    //disable foreign key check for this connection before running seeders
+	    DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+
+	    Sekolah::truncate();
+	    Kelas::truncate();
+	    Siswa::truncate();
+	    // reset foreign check
+	    DB::statement('SET FOREIGN_KEY_CHECKS=1;');
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Admin\Controllers;
 
 use App\Models\Sekolah;
+use App\Http\Collection\RouteCollection;
 
 use Encore\Admin\Form;
 use Encore\Admin\Grid;
@@ -15,12 +16,6 @@ class SekolahCtrl extends Controller
 {
     use ModelForm;
 
-    protected $routes;
-
-    function __construct() {
-    	$this->routes = 'admin/sekolah';
-    }
-
 	/**
      * Index interface.
      *
@@ -30,8 +25,8 @@ class SekolahCtrl extends Controller
     {
         return Admin::content(function (Content $content) {
 
-            $content->header('header');
-            $content->description('description');
+            $content->header('Daftar Sekolah');
+            $content->description('');
 
             $content->body($this->grid());
         });
@@ -77,13 +72,12 @@ class SekolahCtrl extends Controller
      */
     protected function grid()
     {
-	    $routes = $this->routes;
-        return Admin::grid(Sekolah::class, function (Grid $grid) use($routes) {
+        return Admin::grid(Sekolah::class, function (Grid $grid) {
 
             $grid->id('ID')->sortable();
 
-            $grid->name('Sekolah')->display(function($col) use($routes) {
-            	$url = url($routes . "/$this->id/edit");
+            $grid->name('Sekolah')->display(function($col) {
+	            $url = url(RouteCollection::$kelas . "?&sekolah_id=".$this->id);
                 return '<a href="'.$url.'">'.$col.'</a>';
             })->sortable();
 
@@ -94,15 +88,18 @@ class SekolahCtrl extends Controller
             // $grid->updated_at();
 
 	        // The filter($callback) method is used to set up a simple search box for the table
-	        $grid->filter(function ($filter) {
-
-		        // Sets the range query for the created_at field
-		        $filter->between('created_at', 'Created Time')->datetime();
-	        });
+	        $grid->disableFilter();
 
 	        // Set Pagination
 	        // $grid->paginate(5);
 	        $grid->disableExport();
+
+//	        $grid->actions(function($action) {
+//	        	$c_kelas = $action->row->kelas()->count();
+//		        $url = url(RouteCollection::$kelas . "?&sekolah_id=".$action->getKey());
+//		        $url = '<a class="btn btn-xs btn-default" href="'.$url.'">'.$c_kelas.' Kelas</a> &nbsp;';
+//		        $action->prepend($url);
+//	        });
         });
     }
 
