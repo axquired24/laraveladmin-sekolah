@@ -14,3 +14,9 @@ function hl_ifIsset($param, $type='get') {
 		    break;
     }
 }
+
+function hl_routeCurrentAction () {
+	$route = \Route::getCurrentRoute()->getActionName();
+	$method = explode('@', $route );
+	return $method[1];
+}

@@ -78,7 +78,8 @@ class SekolahCtrl extends Controller
 
             $grid->name('Sekolah')->display(function($col) {
 	            $url = url(RouteCollection::$kelas . "?&sekolah_id=".$this->id);
-                return '<a href="'.$url.'">'.$col.'</a>';
+	            $ckelas = $this->kelas()->count();
+                return '<a title="'.$ckelas.' kelas" href="'.$url.'">'.$col.'</a>';
             })->sortable();
 
             $grid->bk_teacher('Guru BK')->sortable();
@@ -89,6 +90,7 @@ class SekolahCtrl extends Controller
 
 	        // The filter($callback) method is used to set up a simple search box for the table
 	        $grid->disableFilter();
+	        $grid->disableRowSelector();
 
 	        // Set Pagination
 	        // $grid->paginate(5);
