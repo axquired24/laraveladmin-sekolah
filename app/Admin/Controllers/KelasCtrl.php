@@ -7,7 +7,7 @@ use function App\Http\hl_ifIsset;
 use function App\Http\hl_routeCurrentAction;
 use App\Models\Kelas;
 use App\Models\Sekolah;
-
+use App\Models\Siswa;
 use Encore\Admin\Form;
 use Encore\Admin\Grid;
 use Encore\Admin\Facades\Admin;
@@ -34,13 +34,14 @@ class KelasCtrl extends Controller
 
     public function index()
     {
-        return Admin::content(function (Content $content) {
+    	$controller = $this;
+        return Admin::content(function (Content $content) use($controller) {
 
 	        $content->header('Daftar Kelas');
 	        $content->description($this->sekolah->name);
 
-	        $content->row(function(Row $row) {
-		        $row->column(3, $this->sekolah->name);
+	        $content->row(function(Row $row) use($controller) {
+		        $row->column(3, $controller->generateUserProfile($this->sekolah));
 		        $row->column(9, $this->grid());
 	        });
 
@@ -186,5 +187,38 @@ EOT;
 <a href="{$url}" class="btn btn-sm btn-default">
 <i class="fa fa-chevron-left"></i> Back to List</a> &nbsp;
 EOT;
+    }
+
+    function generateUserProfile(Sekolah $sekolah) {
+    	$schoolphoto = "https://pbs.twimg.com/profile_images/893459442758369282/o7XXYkqN_400x400.jpg";
+    	$kelas_ids  = $sekolah->kelas()->pluck('id')->toArray();
+    	$siswa_count = Siswa::whereIn('kelas_id', $kelas_ids)->count();
+    	return <<<EOT
+<div class="box box-danger">
+	<div class="box-body box-profile">
+	  <img class="profile-user-img img-responsive img-circle" src="{$schoolphoto}" alt="Foto Sekolah">
+	
+	  <h3 class="profile-username text-center">$sekolah->name</h3>
+	
+	  <p class="text-muted text-center">$sekolah->address</p>
+	
+	  <ul class="list-group list-group-unbordered">
+	    <li class="list-group-item">
+	      <b>Guru BK</b> <a class="pull-right">$sekolah->bk_teacher</a>
+	    </li>
+	    <li class="list-group-item">
+	      <b>Jumlah Kelas</b> <a class="pull-right">{$sekolah->kelas()->count()} Kelas</a>
+	    </li>
+	    <li class="list-group-item">
+	      <b>Friends</b> <a class="pull-right">$siswa_count Siswa</a>
+	    </li>
+	  </ul>
+	
+	  <a href="#" class="btn btn-default btn-block"><b>Lihat Detail</b></a>
+	</div>
+	<!-- /.box-body -->
+</div>
+EOT;
+
     }
 }
