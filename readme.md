@@ -1,7 +1,11 @@
 ### Sample use of Laravel Admin
+Daftar Sekolah 
+![Daftar Sekolah](https://github.com/axquired24/laraveladmin-sekolah/blob/master/readmeimg/sekolah.png?raw=true) 
 
-##### Instructions
+Daftar Kelas 
+![Daftar Kelas](https://github.com/axquired24/laraveladmin-sekolah/blob/master/readmeimg/kelas.png?raw=true)
 
+## Instructions
 ### Pertama, jalankan perintah ini (HARUS URUT)
 - copy `.env.example` to `.env`, configure with your DB
 - `composer install` | Install Dependencies
