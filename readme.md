@@ -16,6 +16,4 @@ Daftar Kelas
 
 ### !HANYA JIKA DATA BROKEN (HARUS URUT)
 untuk me-reset dan re-seed database dengan perintah
-- Run `php artisan migrate:reset`
-- Run `php artisan admin:install` | to seed laravel-admin db
-- Run `php artisan db:seed` | to seed dummy data
+- Run `php artisan bot:refreshdb`

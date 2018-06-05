@@ -7,6 +7,7 @@ use function App\Http\hl_ifIsset;
 use App\Models\Kelas;
 use App\Models\Siswa;
 
+use App\Models\Tema;
 use Encore\Admin\Form;
 use Encore\Admin\Grid;
 use Encore\Admin\Facades\Admin;
@@ -91,6 +92,7 @@ class SiswaCtrl extends Controller
             $grid->id('ID')->sortable();
             $grid->nik('NIK')->sortable();
             $grid->name('Nama')->sortable();
+
             $grid->kelas()->name('Kelas');
             $grid->gender('Gender')->display(function ($gender) {
             	return $gender == "m" ? "Male" : "Female";
@@ -117,6 +119,11 @@ class SiswaCtrl extends Controller
 
 		        $listbtn = $this->generateBackToList($route);
 		        $tools->prepend($listbtn);
+	        });
+
+	        $grid->actions(function($action) {
+	        	$route = url(RouteCollection::$siswa . '/' . $action->getKey() . '/hasil');
+		        $action->prepend('<a href="'.$route.'" title="Lihat Hasil Survei"><i class="fa fa-file-word-o"></i></a>&nbsp;');
 	        });
 
 //            $grid->updated_at();
@@ -161,6 +168,41 @@ class SiswaCtrl extends Controller
         });
     }
 
+    public function hasil($siswa_id) {
+    	$controller = $this;
+    	$siswa = Siswa::findOrFail($siswa_id);
+	    return Admin::content(function (Content $content) use($controller, $siswa) {
+
+		    $content->header('Detail Siswa');
+		    $content->description($siswa->name);
+
+		    $content->row(function(Row $row) use($controller, $siswa) {
+		    	$answer = json_decode($siswa->hasil->answer);
+			    $temas = Tema::whereIn('id', $answer)->get();
+
+			    $timeline_item = "";
+
+			    foreach ($temas as $index => $tema) {
+			    	$timeline_item .= $controller->genTimelineItem($index+1, $tema->name, $tema->description);
+			    }
+
+			    $timeline = <<<EOT
+<ul class="timeline">
+	<li class="time-label">
+          <span class="bg-red">
+            Tema yang dipilih
+          </span>
+    </li>
+	$timeline_item
+</ul>
+EOT;
+			    $backroute = url(RouteCollection::$siswa . '?kelas_id=' . $siswa->kelas_id);
+			    $row->column(3, $controller->generateBackToList($backroute) . '<br><br>' . $controller->genSiswaDetail($siswa));
+			    $row->column(9, $timeline);
+		    });
+	    });
+    }
+
 	function generateBackToList($url = null) {
 		return <<<EOT
 <a href="{$url}" class="btn btn-sm btn-default">
@@ -195,6 +237,56 @@ EOT;
 	</div>
 	<!-- /.box-body -->
 </div>
+EOT;
+	}
+
+	function genSiswaDetail(Siswa $siswa) {
+		$schoolphoto = "https://pbs.twimg.com/profile_images/893459442758369282/o7XXYkqN_400x400.jpg";
+		$gender = $siswa->gender == "m" ? "Male" : "Female";
+		return <<<EOT
+<div class="box box-danger">
+	<div class="box-body box-profile">
+	  <img class="profile-user-img img-responsive img-circle" src="{$schoolphoto}" alt="Foto Sekolah">
+	
+	  <h3 class="profile-username text-center">$siswa->name
+	  <small><br> Kelas {$siswa->kelas->name}</small>
+	  </h3>
+	
+	  <p class="text-muted text-center">{$siswa->kelas->sekolah->name}</p>
+	
+	  <ul class="list-group list-group-unbordered">
+	    <li class="list-group-item">
+	      <b>Guru BK</b> <a class="pull-right">{$siswa->kelas->sekolah->bk_teacher}</a>
+	    </li>
+	    <li class="list-group-item">
+	      <b>NIK</b> <a class="pull-right">$siswa->nik</a>
+	    </li>
+	    <li class="list-group-item">
+	      <b>Gender</b> <a class="pull-right">$gender</a>
+	    </li>
+	  </ul>
+	
+	</div>
+	<!-- /.box-body -->
+</div>
+EOT;
+	}
+
+	function genTimelineItem($index, $title, $content, $icon='fa-chevron-right', $iconbg='bg-blue') {
+    	return <<<EOT
+<li>
+  <i class="fa {$icon} {$iconbg}"></i>
+
+  <div class="timeline-item">
+    <span class="time"><i class="fa fa-clock-o"></i> </span>
+
+    <h3 class="timeline-header"><a href="#">#{$index} {$title}</a></h3>
+
+    <div class="timeline-body">
+      {$content}
+    </div>
+  </div>
+</li>
 EOT;
 
 	}

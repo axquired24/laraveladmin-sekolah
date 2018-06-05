@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Hasil;
 use Illuminate\Database\Seeder;
 use App\Models\Sekolah;
 use App\Models\Kelas;
@@ -36,10 +37,20 @@ class SekolahSeeder extends Seeder
 				    ])
 
 				    ->each(function($siswa) {
-					    echo "Creating Siswa: $siswa->name\n";
+				    	$this->genDummyHasil($siswa);
+					    echo "Creating Siswa & Hasil: $siswa->name\n";
 				    });
 			    });
 		    });
+    }
+
+    function genDummyHasil(Siswa $siswa) {
+    	$tema_ids = \App\Models\Tema::pluck('id')->random(10)->toJson();
+
+    	$hasil = new Hasil();
+    	$hasil->siswa_id = $siswa->id;
+    	$hasil->answer = $tema_ids;
+    	$hasil->save();
     }
 
     function truncateTable() {

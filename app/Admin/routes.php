@@ -15,6 +15,7 @@ Route::group([
     $router->resource('sekolah', SekolahCtrl::class);
     $router->resource('kelas', KelasCtrl::class);
     $router->resource('siswa', SiswaCtrl::class);
+    $router->get('siswa/{siswa_id}/hasil', 'SiswaCtrl@hasil');
     $router->resource('tema', TemaCtrl::class);
 
 });
