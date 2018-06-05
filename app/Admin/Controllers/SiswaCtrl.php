@@ -4,6 +4,7 @@ namespace App\Admin\Controllers;
 
 use App\Http\Collection\RouteCollection;
 use function App\Http\hl_ifIsset;
+use App\Models\Hasil;
 use App\Models\Kelas;
 use App\Models\Siswa;
 
@@ -34,14 +35,49 @@ class SiswaCtrl extends Controller
      */
     public function index()
     {
-    	$controller = $this;
-        return Admin::content(function (Content $content) use($controller) {
+	    $controller = $this;
+
+	    $siswa_ids = Siswa::where('kelas_id', $this->kelas->id)->pluck('id')->toArray();
+	    $hasils = Hasil::whereIn('siswa_id', $siswa_ids)->pluck('answer')->map(function($item) {
+	    	return json_decode($item);
+	    })->collapse();
+
+	    $uniq_hasil = $hasils->unique()->map(function ($item) use($hasils) {
+	    	$counthasil = $hasils->filter(function($hasil) use($item) {
+	    		return $hasil == $item;
+		    })->count();
+
+	    	return (object) [
+	    		'tema' => Tema::find($item),
+			    'counter' => $counthasil
+		    ];
+	    })->sortByDesc('counter')->toArray();
+
+	    $timeline_item = "";
+	    foreach ($uniq_hasil as $item) {
+	    	$counter = '<strong>('.$item->counter.' Siswa Memilih Tema)</strong>';
+	    	//. $item->tema->description;
+		    $timeline_item .= $controller->genTimelineItem('', $item->tema->name, $counter, 'bg-red');
+	    }
+
+	    $timeline = <<<EOT
+<br>
+<ul class="timeline">
+	<li class="time-label">
+          <span class="bg-red">
+            Tema Terpopuler
+          </span>
+    </li>
+	$timeline_item
+</ul>
+EOT;
+        return Admin::content(function (Content $content) use($controller, $timeline) {
 
             $content->header('Daftar Siswa');
             $content->description('Kelas ' . $controller->kelas->name . ' | ' . $controller->kelas->sekolah->name);
 
-	        $content->row(function(Row $row) use($controller) {
-		        $row->column(3, $controller->generateUserProfile($controller->kelas));
+	        $content->row(function(Row $row) use($controller, $timeline) {
+		        $row->column(3, $controller->generateUserProfile($controller->kelas) . $timeline);
 		        $row->column(9, $this->grid());
 	        });
         });
@@ -272,7 +308,7 @@ EOT;
 EOT;
 	}
 
-	function genTimelineItem($index, $title, $content, $icon='fa-chevron-right', $iconbg='bg-blue') {
+	function genTimelineItem($index, $title, $content, $iconbg='bg-blue', $icon='fa-chevron-right') {
     	return <<<EOT
 <li>
   <i class="fa {$icon} {$iconbg}"></i>
