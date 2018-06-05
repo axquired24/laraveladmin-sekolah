@@ -18,7 +18,6 @@ class CreateKelasTable extends Migration
             $table->integer('sekolah_id')->unsigned();
             $table->string('name');
             $table->string('school_year');
-            $table->integer('student_count')->default(0);
             $table->timestamps();
 
             $table->foreign('sekolah_id')

@@ -165,8 +165,6 @@ EOT;
 
             $form->text('name', 'Kelas');
             $form->text('school_year', 'Tahun Ajaran');
-            $form->display('student_count', 'Jml Siswa')->value(0);
-            // !important column
 
 		    // Jika form = Create NEW, sisipkan default sekolah_id untuk kolom db
 		    if($is_new) {

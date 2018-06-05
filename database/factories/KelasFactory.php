@@ -9,7 +9,6 @@ $factory->define(App\Models\Kelas::class, function (Faker $faker) {
     return [
 	    'sekolah_id' => 1, // will be override
 		'name' => $kelas_int .' ' . $faker->city,
-		'school_year' => $school_year,
-		'student_count' => $faker->numberBetween(10, 20)
+		'school_year' => $school_year
     ];
 });

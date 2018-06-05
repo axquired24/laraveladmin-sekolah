@@ -19,20 +19,19 @@ class SekolahSeeder extends Seeder
 
 	    // generate sekolah
 	    $c_sekolah = 10;
-	    $c_kelas = 3;
 
 	    // Generate Sekolah, Kelas, Siswa
 	    echo "\nGenerate Sekolah, Kelas, Siswa\n";
 	    factory(Sekolah::class, $c_sekolah)->create()
-		    ->each(function($sekolah) use($c_kelas) {
+		    ->each(function($sekolah) {
 			    echo "Creating Sekolah: $sekolah->name ...\n";
-		    	factory(Kelas::class, $c_kelas)->create([
+		    	factory(Kelas::class, rand(2, 5))->create([
 		    		'sekolah_id' => $sekolah->id
 			    ])
 
 			    ->each(function($kelas) {
 				    echo "Creating Kelas: $kelas->name\n";
-			    	factory(Siswa::class, $kelas->student_count)->create([
+			    	factory(Siswa::class, rand(10, 20))->create([
 					    'kelas_id' => $kelas->id
 				    ])
 
