@@ -12,12 +12,30 @@ class AdminMenuSeeder extends Seeder
      */
     public function run()
     {
-        $menu = new Menu();
-        $menu->title = "Daftar Sekolah";
-        $menu->icon = "fa-building";
-        $menu->uri = "sekolah";
-        $menu->save();
+    	$menus = collect([
+		    [
+			    'title' => 'Daftar Sekolah',
+			    'icon' => 'fa-building',
+			    'uri' => 'sekolah'
+		    ],
+		    [
+			    'title' => 'Daftar Tema',
+			    'icon' => 'fa-cubes',
+			    'uri' => 'tema'
+		    ]
+	    ]);
 
-        echo "\nMenu $menu->title created successfully";
+        $menus->each(function($item) {
+        	$item = (object) $item;
+
+	        $menu = new Menu();
+	        $menu->title = $item->title;
+	        $menu->icon = $item->icon;
+	        $menu->uri = $item->uri;
+	        $menu->save();
+
+	        echo "\nMenu $menu->title created successfully";
+        });
+        echo "\n";
     }
 }

@@ -53,8 +53,8 @@ class SekolahCtrl extends Controller
     {
         return Admin::content(function (Content $content) use ($id) {
 
-            $content->header('header');
-            $content->description('description');
+            $content->header('Edit Sekolah');
+            $content->description('');
 
             $content->body($this->form()->edit($id));
         });
@@ -69,8 +69,8 @@ class SekolahCtrl extends Controller
     {
         return Admin::content(function (Content $content) {
 
-            $content->header('header');
-            $content->description('description');
+            $content->header('Tambah Sekolah');
+            $content->description('');
 
             $content->body($this->form());
         });
