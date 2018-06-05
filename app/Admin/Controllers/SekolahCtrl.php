@@ -93,6 +93,9 @@ class SekolahCtrl extends Controller
                 return '<a title="'.$ckelas.' kelas" href="'.$url.'">'.$col.'</a>';
             })->sortable();
 
+            $grid->kelas()->count('Jumlah Kelas')->display(function($col) {
+            	return $col . ' kelas';
+            });
             $grid->bk_teacher('Guru BK')->sortable();
             $grid->address('Alamat')->sortable();
 
@@ -107,12 +110,6 @@ class SekolahCtrl extends Controller
 	        // $grid->paginate(5);
 	        $grid->disableExport();
 
-//	        $grid->actions(function($action) {
-//	        	$c_kelas = $action->row->kelas()->count();
-//		        $url = url(RouteCollection::$kelas . "?&sekolah_id=".$action->getKey());
-//		        $url = '<a class="btn btn-xs btn-default" href="'.$url.'">'.$c_kelas.' Kelas</a> &nbsp;';
-//		        $action->prepend($url);
-//	        });
         });
     }
 

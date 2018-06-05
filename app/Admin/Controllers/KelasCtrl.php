@@ -94,11 +94,21 @@ class KelasCtrl extends Controller
         return Admin::grid(Kelas::class, function (Grid $grid) {
 
             $grid->id('ID')->sortable();
-            $grid->name('Kelas')->sortable();
-            $grid->school_year('TA')->sortable();
-            $grid->sekolah()->name('Sekolah');
 
-            $grid->created_at()->sortable();;
+	        $grid->name('Kelas')->display(function($col) {
+		        $url = url(RouteCollection::$siswa . "?&kelas_id=".$this->id);
+		        $csiswa = $this->sekolah()->count();
+		        return '<a title="'.$csiswa.' siswa" href="'.$url.'">'.$col.'</a>';
+	        })->sortable();
+
+//            $grid->name('Kelas')->sortable();
+            $grid->school_year('Tahun Ajaran')->sortable();
+	        $grid->siswa()->count('Jumlah Siswa')->display(function($col) {
+		        return $col . ' siswa';
+	        });
+            //$grid->sekolah()->name('Sekolah');
+
+            $grid->created_at()->sortable();
             // $grid->updated_at();
 
 	        $sekolahs = Sekolah::select(['id', 'name'])->get();
@@ -158,6 +168,7 @@ EOT;
             $form->display('student_count', 'Jml Siswa')->value(0);
             // !important column
 
+		    // Jika form = Create NEW, sisipkan default sekolah_id untuk kolom db
 		    if($is_new) {
 			    $form->hidden('sekolah_id', 'Sekolah')->value(optional($this->sekolah)->id);
 		    }
@@ -185,7 +196,7 @@ EOT;
     function generateBackToList($url = null) {
 	    return <<<EOT
 <a href="{$url}" class="btn btn-sm btn-default">
-<i class="fa fa-chevron-left"></i> Back to List</a> &nbsp;
+<i class="fa fa-chevron-left"></i> Kembali</a> &nbsp;
 EOT;
     }
 
@@ -210,7 +221,7 @@ EOT;
 	      <b>Jumlah Kelas</b> <a class="pull-right">{$sekolah->kelas()->count()} Kelas</a>
 	    </li>
 	    <li class="list-group-item">
-	      <b>Friends</b> <a class="pull-right">$siswa_count Siswa</a>
+	      <b>Jumlah Siswa</b> <a class="pull-right">$siswa_count Siswa</a>
 	    </li>
 	  </ul>
 	
